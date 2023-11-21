@@ -102,9 +102,9 @@ public class Evento {
 	            throw new Exception("Questo evento è terminato");
 	        }
 
-	        if (getPostiTotali() == 0) {
+	        if (getPostiPrenotati() == 0) {
 
-	            throw new Exception("Questo evento è SOLD OUT");
+	            throw new Exception("Non ci sono prenotazioni per questo evento");
 	        }
 
 	        setPostiPrenotati(getPostiPrenotati() - 1);
@@ -123,7 +123,8 @@ public class Evento {
 	    @Override
 	    public String toString() {
 	        
-	        return getDataFormattata(getData()) + " - " + getTitolo();
+	        return "L\'evento " + getTitolo()
+	        		+ "in data" + getDataFormattata(getData());
 	    }
 
 
