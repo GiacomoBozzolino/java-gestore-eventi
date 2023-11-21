@@ -111,11 +111,11 @@ public class Evento {
 	    }
 		
 		
-		private String getDataFormattata(LocalDate data) {
+		protected String getDataFormattata() {
 	        
 	        DateTimeFormatter formatoData = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 	        
-	        String dataFormattata = data.format(formatoData);
+	        String dataFormattata = getData().format(formatoData);
 	        
 	        return dataFormattata;
 	    }
@@ -124,7 +124,7 @@ public class Evento {
 	    public String toString() {
 	        
 	        return "L\'evento " + getTitolo()
-	        		+ "in data" + getDataFormattata(getData());
+	        		+ "in data" + getDataFormattata();
 	    }
 
 
