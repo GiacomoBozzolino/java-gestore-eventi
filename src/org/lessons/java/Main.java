@@ -8,102 +8,149 @@ import java.util.Scanner;
 
 import org.lessons.java.pojo.Concerto;
 import org.lessons.java.pojo.Evento;
+import org.lessons.java.pojo.ProgrammEventi;
 
 public class Main {
-    public static void main(String[] args) {
-        Scanner in = new Scanner(System.in);
-        Evento evento = null;
-        
 
-        // Chiedi all'utente di inserire i dettagli per un nuovo evento
-            System.out.println("Inserisci il titolo dell'evento:");
+    public static void main(String[] args) {
+
+        Scanner in = new Scanner(System.in);
+
+        System.out.print("Inserisci Titolo Programma Eventi: ");
+        String titoloProgramma = in.nextLine();
+
+        ProgrammEventi p = new ProgrammEventi(titoloProgramma);
+
+        while (true) {
+
+            System.out.print("Titolo Evento: ");
             String titolo = in.nextLine();
 
-            System.out.println("Inserisci la data dell'evento (formato dd/MM/yyyy):");
-            String strDate = in.nextLine();
-            LocalDate data = LocalDate.parse(strDate, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+            System.out.print("Data (formato dd/MM/yyyy): ");
+            String dataString = in.nextLine();
+            LocalDate data = LocalDate.parse(dataString, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 
-            System.out.println("Inserisci il numero di posti totali disponibili:");
-            String strPostiTotali=in.nextLine();
-            int intPostiTotali = Integer.valueOf(strPostiTotali);
-            
-            System.out.println("L'evento è un concerto? (sì:no)");
-            String strConcerto=in.nextLine();
-        
-        try {
-        	
-        	if(!strConcerto.equals("no")) {
-        		System.out.println("Ora (formato HH:mm): ");
-        		String strOra = in.nextLine();
-        		LocalTime ora = LocalTime.parse(strOra, DateTimeFormatter.ofPattern("HH:mm"));
-        		
-        		System.out.println("Prezzo");
-        		String strPrezzo =in.nextLine();
-        		BigDecimal prezzo = new BigDecimal (strPrezzo);
-        		evento = new Concerto(titolo, data, intPostiTotali, ora, prezzo);
-        	} else {
-        		
-        		//Crea un nuovo evento
-            evento = new Evento(titolo, data, intPostiTotali);
-            System.out.println("Data dell'evento: " + evento.getData().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
-        	}
-        	
-            // Chiedi all'utente se vuole effettuare delle prenotazioni
-            System.out.println("Vuoi effettuare delle prenotazioni? (sì/no):");
-            String rispostaPrenotazioni = in.nextLine();
-        
-           
-            if (!rispostaPrenotazioni.equals("no")) {
-                System.out.println("Quante prenotazioni vuoi effettuare?");
-                String strNumeroPrenotazioni=in.nextLine();
-                int numeroPrenotazioni = Integer.valueOf(strNumeroPrenotazioni);
+            System.out.print("Numero di posti totali disponibili: ");
+            String strPostiTotali = in.nextLine();
+            int postiTotali = Integer.valueOf(strPostiTotali);
 
-                // Effettua le prenotazioni
-                if (numeroPrenotazioni > 0) {
-	                for (int i = 0; i < numeroPrenotazioni; i++) {
-	                    evento.prenota();
-	                    System.out.println("Prenotazione effettuata con successo.");
-	                }
+            System.out.print("Scegli il tipo di evento (Evento/Concerto): ");
+            String tipoEvento = in.nextLine().toLowerCase();
+
+            Evento evento = null;
+
+            try {
+
+                if (tipoEvento.equals("evento")) {
+                    evento = new Evento(titolo, data, postiTotali);
+
+                } else if (tipoEvento.equals("concerto")) {
+                    System.out.print("Ora (formato HH:mm): ");
+                    String oraString = in.nextLine();
+                    LocalTime ora = LocalTime.parse(oraString, DateTimeFormatter.ofPattern("HH:mm"));
+
+                    System.out.print("Prezzo: ");
+                    String prezzoString = in.nextLine();
+                    BigDecimal prezzo = new BigDecimal(prezzoString);
+
+                    evento = new Concerto(titolo, data, postiTotali, ora, prezzo);
+
                 } else {
-                	 System.out.println("Le prenotazioni non possono essere negative.");
+
+                    System.out.println("Tipo di evento non valido.");
+
                 }
+
+                p.aggiungiEvento(evento);
+
+                System.out.print("Vuoi effettuare delle prenotazioni? (si/no): ");
+                String risposta = in.nextLine();
+
+                if (risposta.equals("si")) {
+
+                    System.out.print("Quante prenotazioni vuoi effettuare? ");
+                    String strNumeroPrenotazioni = in.nextLine();
+                    int numeroPrenotazioni = Integer.valueOf(strNumeroPrenotazioni);
+
+                    if (numeroPrenotazioni > 0) {
+
+                        for (int i = 0; i < numeroPrenotazioni; i++) {
+
+                            evento.prenota();
+                        }
+                    } else {
+
+                        System.out.println("Non può contenere un numero negativo!");
+
+                    }
+                }
+
+                System.out.print("Vuoi disdire delle prenotazioni? (si/no): ");
+                risposta = in.nextLine();
+
+                if (risposta.equals("si")) {
+
+                    System.out.print("Quanti posti vuoi disdire? ");
+                    String strNumeroDisdette = in.nextLine();
+                    int numeroDisdette = Integer.valueOf(strNumeroDisdette);
+
+                    if (numeroDisdette > 0) {
+
+                        for (int i = 0; i < numeroDisdette; i++) {
+
+                            evento.disdici();
+
+                        }
+                    } else {
+                        System.out.println("Non può contenere un numero negativo!");
+                    }
+
+                }
+
+                System.out.println(evento);
+
+            } catch (Exception e) {
+
+                System.out.println(e.getMessage());
+
             }
 
-            // Stampa il numero di posti prenotati e disponibili
-            System.out.println("Posti prenotati: " + evento.getPostiPrenotati());
-            System.out.println("Posti disponibili: " + (evento.getPostiTotali() - evento.getPostiPrenotati()));
+            System.out.print("Vuoi aggiungere un nuovo evento? (si/no) ");
+            String risposta = in.nextLine();
 
-            // Chiedi all'utente se vuole disdire dei posti
-            System.out.println("Vuoi disdire dei posti? (sì/no):");
-            String rispostaDisdette = in.nextLine();
-            
+            if (risposta.equals("no")) {
+                System.out.print("Vuoi cancellare tutto?");
+                String cancella = in.nextLine();
 
-            if (!rispostaDisdette.equalsIgnoreCase("no")) {
-                System.out.println("Quanti posti vuoi disdire?");
-                
-                String strnumeroDisdette=in.nextLine();
-                int numeroDisdette = Integer.valueOf(strnumeroDisdette);
-
-                // Effettua le disdette
-                if (numeroDisdette > 0) {
-	                for (int i = 0; i < numeroDisdette; i++) {
-	                    evento.disdici();
-	                    System.out.println("Disdetta effettuata con successo.");
-	                }
-                }else {
-                	System.out.println("Le disdette non possono essere negative.");
+                if (cancella.equals("si")) {
+                    p.svuotaEventi();
+                    System.out.println("La lista " + p.getTitolo() + " è stata svuotata");
+                    in.close();
+                    return;
                 }
+
+                System.out.print("Vuoi filtrare la lista per una determinata data? (si/no) ");
+                String filtroData = in.nextLine();
+
+                if (filtroData.equals("si")) {
+
+                    System.out.print("Inserisci una data: ");
+                    String dataInserita = in.nextLine();
+                    LocalDate d = LocalDate.parse(dataInserita, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+                    System.out.println("\n" + p.visualizzaProgramma(p.eventiByDate(d)));
+                    in.close();
+                    return;
+                }
+
+                break;
             }
 
-            // Stampa il numero di posti prenotati e disponibili dopo le disdette
-            System.out.println("Posti prenotati dopo le disdette: " + evento.getPostiPrenotati());
-            System.out.println("Posti disponibili dopo le disdette: " + (evento.getPostiTotali() - evento.getPostiPrenotati()));
-            System.out.println(evento);
-        } catch (Exception e) {
-            System.out.println("Errore generale: " + e.getMessage());
         }
 
-        // Chiusura dello scanner
         in.close();
+
+        System.out.println("\n" + p.visualizzaProgramma(p.getEventi()));
+
     }
+
 }

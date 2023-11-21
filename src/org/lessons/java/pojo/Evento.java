@@ -124,7 +124,7 @@ public class Evento {
 	    public String toString() {
 	        
 	        return "L\'evento " + getTitolo()
-	        		+ "in data" + getDataFormattata();
+	        		+ " in data " + getDataFormattata();
 	    }
 
 
